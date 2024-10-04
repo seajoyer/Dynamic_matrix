@@ -20,7 +20,7 @@
 
           nativeBuildInputs = with pkgs; [ gnumake libgcc ];
 
-          buildInputs = with pkgs; [ libcxx catch2 ];
+          buildInputs = with pkgs; [ libcxx catch ];
 
           buildPhase = ''
             make build/run_tests -j $NIX_BUILD_CORES
@@ -46,7 +46,7 @@
 
           nativeBuildInputs = with pkgs; [ gnumake ccache git bear libgcc ];
 
-          buildInputs = with pkgs; [ libcxx catch2 ];
+          buildInputs = with pkgs; [ libcxx catch ];
 
           shellHook = ''
             export CC=gcc
@@ -55,7 +55,7 @@
 
             export CCACHE_DIR=$HOME/.ccache
             export PATH="$HOME/.ccache/bin:$PATH"
-            export CPATH=${pkgs.catch2}/include:$CPATH
+            export CPATH=${pkgs.catch}/include:$CPATH
 
             alias c=clear
 
