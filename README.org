@@ -1,69 +1,122 @@
-* Homework on program arguments
+* Interpolation Project
 
-The project offers a ...
+This project implements Lagrange Interpolation in C++, providing both uniform and Chebyshev node distributions. It includes functionality for interpolating single points and ranges, as well as plotting capabilities using gnuplot.
+
+** Features
+
+- Lagrange Interpolation implementation
+- Support for uniform and Chebyshev node distributions
+- Single point and range interpolation
+- Plotting functionality using gnuplot
+- Nix flake for reproducible builds and development environment
 
 ** Navigation
-- [[#building][Building]]
+
+- [[#building-and-running][Building and Running]]
   - [[#with-nix][With Nix]]
   - [[#manually][Manually]]
 - [[#usage][Usage]]
+- [[#project-structure][Project Structure]]
+- [[#dependencies][Dependencies]]
 
-** Building
+** Building and Running
 
 *** With Nix
 
-For lucky Nix users, to build and run the project, it's enough to execute:
-#+begin_src shell
-nix run github:seajoyer/SupCo#argument_search -- <arg1 arg2 ...> --impure
-#+end_src shell
+For Nix users, building and running the project is straightforward:
 
-You can also start an isolated development shell with all the dependencies by simply running:
 #+begin_src shell
-nix develop github:seajoyer/SupCo#argument_search
-#+end_src shell
+# Build the project
+nix build
+
+# Run the project (this will generate and display plots)
+nix run
+#+end_src
+
+You can also start an isolated development shell with all the dependencies:
+
+#+begin_src shell
+nix develop
+#+end_src
 
 *** Manually
 
 **** Prerequisites
 
-First, install dependencies, this is done differently in different systems:
+Ensure you have the following dependencies installed:
 
-- [[https://gcc.gnu.org/][g++]] compiler
-- [[https://www.gnu.org/software/make/#download][Make]] build system
+- C++ compiler (g++ or clang++)
+- Make build system
+- gnuplot (for plotting)
+- Boost library
 
 **** Building & Running
 
 1. Clone the repository:
    #+begin_src shell
-   git clone https://github.com/seajoyer/SupCo
-   cd SupCo/Argument_search
-   #+end_src shell
-2. And once you are ready:
+   git clone [repository-url]
+   cd [repository-name]
+   #+end_src
 
-   ~make~ to build
+2. Build the project:
+   #+begin_src shell
+   make
+   #+end_src
 
-   ~make run ARGS="<arg1 arg2 ...>"~ to build & run
+3. Run the project:
+   #+begin_src shell
+   make run
+   #+end_src
 
-   ~make clean~ to clean the ~build~ directory
-
-   ~make help~ to see a help message
+4. Clean the build directory:
+   #+begin_src shell
+   make clean
+   #+end_src
 
 ** Usage
 
-Run the program ~build/Argument_search~ and pass all the desired arguments ~-3 ez -.69 aboba 3.14 1.a 7 -.69 ez~
+The main program demonstrates Lagrange Interpolation with both uniform and Chebyshev nodes. When you run the program, it will:
 
-#+begin_src shell
-$ build/Argument_search -3 ez -.69 aboba 3.14 1.a 7 -.69 ez
+1. Generate interpolation nodes
+2. Perform interpolation
+3. Create plot data
+4. Generate gnuplot scripts
+5. Display the resulting plots
 
-Integral number: 1a
-  wrong candidate, try again: 3.14
-  wrong candidate, try again: -3
-  position: 1
+The plots will show:
+- Original function
+- Interpolation nodes
+- Interpolated function
 
-Floating point number: 1.a
-  wrong candidate, try again: -.69
-  position: 3
+You can modify the interpolation parameters (such as the number of nodes or the function being interpolated) by editing the `main.cpp` file.
 
-String: ez
-  position: 2
-#+end_src
+** Project Structure
+
+- `cpp/`
+  - `include/`
+    - `lagrange_interpolation.h`
+    - `plotting.h`
+  - `src/`
+    - `lagrange_interpolation.cpp`
+    - `plotting.cpp`
+  - `main.cpp`
+  - `Makefile`
+- `flake.nix`
+- `flake.lock`
+
+** Dependencies
+
+- C++20 compatible compiler
+- Make
+- gnuplot
+- Boost library
+
+For Nix users, all dependencies are managed through the flake.nix file.
+
+** Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+** License
+
+[Specify your license here]

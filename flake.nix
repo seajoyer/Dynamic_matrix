@@ -18,7 +18,7 @@
 
           src = ./.;
 
-          nativeBuildInputs = with pkgs; [ gnumake ];
+          nativeBuildInputs = with pkgs; [ gnumake libgcc ];
 
           buildInputs = with pkgs; [ libcxx catch2 ];
 
@@ -46,7 +46,7 @@
         devShells.default = pkgs.mkShell {
           name = "dynamic_matrix-dev-shell";
 
-          nativeBuildInputs = with pkgs; [ gnumake ccache git bear ];
+          nativeBuildInputs = with pkgs; [ gnumake ccache git bear libgcc ];
 
           buildInputs = with pkgs; [ libcxx catch2 ];
 
@@ -67,7 +67,6 @@
             echo ""
             echo "Build the project:  nix build"
             echo "Run the project:    nix run"
-            echo "Run the tests:      nix flake check"
             echo ""
             echo "Happy coding!"
           '';
