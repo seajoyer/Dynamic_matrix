@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -std=c++20 -Wall -Wextra -O2
+CXXFLAGS := -Wall -Wextra -O2
 
 SRC_DIR := src
 INC_DIR := include
