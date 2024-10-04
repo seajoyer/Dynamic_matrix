@@ -50,8 +50,6 @@ run: $(TARGET)
 
 help:
 	@echo "Usage:"
-	@echo "  make         # Build the project"
-	@echo "  make run     # Build and run the project"
 	@echo "  make test    # Build and run the tests"
 	@echo "  make clean   # Remove build artifacts and temporary files"
 	@echo "  make help    # Show this help message"

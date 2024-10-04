@@ -34,12 +34,10 @@
 
       in {
         packages = {
-          dynamic_matrix = testDynamicMatrics;
           default = testDynamicMatrics;
         };
 
         apps = {
-          dynamic_matrix = flake-utils.lib.mkApp { drv = testDynamicMatrics; };
           default = flake-utils.lib.mkApp { drv = testDynamicMatrics; };
         };
 

@@ -1,42 +1,35 @@
-* Interpolation Project
+* Dynamic Matrix Project
 
-This project implements Lagrange Interpolation in C++, providing both uniform and Chebyshev node distributions. It includes functionality for interpolating single points and ranges, as well as plotting capabilities using gnuplot.
+This project implements a dynamic matrix structure in C++ with support for 3D vector operations. It provides a flexible and efficient way to work with matrices of varying sizes, along with comprehensive unit tests to ensure reliability.
 
 ** Features
-
-- Lagrange Interpolation implementation
-- Support for uniform and Chebyshev node distributions
-- Single point and range interpolation
-- Plotting functionality using gnuplot
-- Nix flake for reproducible builds and development environment
+- Dynamic allocation and deallocation of matrix memory
+- Support for 3D vector operations within the matrix
+- Matrix arithmetic operations (addition, subtraction, multiplication)
+- Row and column manipulation (insertion, deletion)
+- Submatrix insertion
+- Comprehensive unit tests using Catch2 framework
 
 ** Navigation
-
-- [[#building-and-running][Building and Running]]
+- [[#building][Building]]
   - [[#with-nix][With Nix]]
   - [[#manually][Manually]]
 - [[#usage][Usage]]
-- [[#project-structure][Project Structure]]
-- [[#dependencies][Dependencies]]
 
-** Building and Running
+** Building
 
 *** With Nix
 
 For Nix users, building and running the project is straightforward:
 
 #+begin_src shell
-# Build the project
-nix build
-
-# Run the project (this will generate and display plots)
-nix run
+nix run github:seajoyer/Dynamic_matrix --impure
 #+end_src
 
-You can also start an isolated development shell with all the dependencies:
+You can also start an isolated development shell with all dependencies by running:
 
 #+begin_src shell
-nix develop
+nix develop github:seajoyer/Dynamic_matrix
 #+end_src
 
 *** Manually
@@ -45,78 +38,44 @@ nix develop
 
 Ensure you have the following dependencies installed:
 
-- C++ compiler (g++ or clang++)
-- Make build system
-- gnuplot (for plotting)
-- Boost library
+- [[https://gcc.gnu.org/][g++]] compiler
+- [[https://www.gnu.org/software/make/][GNU Make]]
+- [[https://github.com/catchorg/Catch2][Catch2]] (for testing)
 
-**** Building & Running
+**** Building
 
 1. Clone the repository:
    #+begin_src shell
-   git clone [repository-url]
-   cd [repository-name]
+   git clone https://github.com/seajoyer/Dynamic_matrix
+   cd Dynamic_matrix
    #+end_src
 
 2. Build the project:
-   #+begin_src shell
-   make
-   #+end_src
 
-3. Run the project:
-   #+begin_src shell
-   make run
-   #+end_src
+   ~make test~ to build & run tests
 
-4. Clean the build directory:
-   #+begin_src shell
-   make clean
-   #+end_src
+   ~make clean~ to clean the ~build~ directory
+
+   ~make help~ to see a help message
 
 ** Usage
 
-The main program demonstrates Lagrange Interpolation with both uniform and Chebyshev nodes. When you run the program, it will:
+To use the DynamicMatrix class in your own projects:
 
-1. Generate interpolation nodes
-2. Perform interpolation
-3. Create plot data
-4. Generate gnuplot scripts
-5. Display the resulting plots
+1. Include the necessary headers:
+   #+begin_src cpp
+   #include "dynamic_matrix.h"
+   #include "vector3d_structure.h"
+   #+end_src
 
-The plots will show:
-- Original function
-- Interpolation nodes
-- Interpolated function
+2. Create and manipulate matrices:
+   #+begin_src cpp
+   DynamicMatrix matrix(3, 3);
+   matrix.at(0, 0) = Vector3D(1, 2, 3);
+   matrix.at(1, 1) = Vector3D(4, 5, 6);
 
-You can modify the interpolation parameters (such as the number of nodes or the function being interpolated) by editing the `main.cpp` file.
+   DynamicMatrix result = matrix * 2;
+   result.print();
+   #+end_src
 
-** Project Structure
-
-- `cpp/`
-  - `include/`
-    - `lagrange_interpolation.h`
-    - `plotting.h`
-  - `src/`
-    - `lagrange_interpolation.cpp`
-    - `plotting.cpp`
-  - `main.cpp`
-  - `Makefile`
-- `flake.nix`
-- `flake.lock`
-
-** Dependencies
-
-- C++20 compatible compiler
-- Make
-- gnuplot
-- Boost library
-
-For Nix users, all dependencies are managed through the flake.nix file.
-
-** Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-** License
-
-[Specify your license here]
+For more detailed examples, refer to the test cases in `tests/dynamic_matrix_tests.cpp`.
