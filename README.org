@@ -1,0 +1,69 @@
+* Homework on program arguments
+
+The project offers a ...
+
+** Navigation
+- [[#building][Building]]
+  - [[#with-nix][With Nix]]
+  - [[#manually][Manually]]
+- [[#usage][Usage]]
+
+** Building
+
+*** With Nix
+
+For lucky Nix users, to build and run the project, it's enough to execute:
+#+begin_src shell
+nix run github:seajoyer/SupCo#argument_search -- <arg1 arg2 ...> --impure
+#+end_src shell
+
+You can also start an isolated development shell with all the dependencies by simply running:
+#+begin_src shell
+nix develop github:seajoyer/SupCo#argument_search
+#+end_src shell
+
+*** Manually
+
+**** Prerequisites
+
+First, install dependencies, this is done differently in different systems:
+
+- [[https://gcc.gnu.org/][g++]] compiler
+- [[https://www.gnu.org/software/make/#download][Make]] build system
+
+**** Building & Running
+
+1. Clone the repository:
+   #+begin_src shell
+   git clone https://github.com/seajoyer/SupCo
+   cd SupCo/Argument_search
+   #+end_src shell
+2. And once you are ready:
+
+   ~make~ to build
+
+   ~make run ARGS="<arg1 arg2 ...>"~ to build & run
+
+   ~make clean~ to clean the ~build~ directory
+
+   ~make help~ to see a help message
+
+** Usage
+
+Run the program ~build/Argument_search~ and pass all the desired arguments ~-3 ez -.69 aboba 3.14 1.a 7 -.69 ez~
+
+#+begin_src shell
+$ build/Argument_search -3 ez -.69 aboba 3.14 1.a 7 -.69 ez
+
+Integral number: 1a
+  wrong candidate, try again: 3.14
+  wrong candidate, try again: -3
+  position: 1
+
+Floating point number: 1.a
+  wrong candidate, try again: -.69
+  position: 3
+
+String: ez
+  position: 2
+#+end_src
