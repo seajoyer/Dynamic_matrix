@@ -45,6 +45,26 @@ DynamicMatrix& DynamicMatrix::operator=(const DynamicMatrix& other) {
     return *this;
 }
 
+DynamicMatrix::DynamicMatrix(DynamicMatrix&& other) noexcept
+    : matrix(other.matrix), rows(other.rows), cols(other.cols) {
+    other.matrix = nullptr;
+    other.rows = 0;
+    other.cols = 0;
+}
+
+DynamicMatrix& DynamicMatrix::operator=(DynamicMatrix&& other) noexcept {
+    if (this != &other) {
+        deallocateMemory();
+        matrix = other.matrix;
+        rows = other.rows;
+        cols = other.cols;
+        other.matrix = nullptr;
+        other.rows = 0;
+        other.cols = 0;
+    }
+    return *this;
+}
+
 Vector3D& DynamicMatrix::at(size_t row, size_t col) {
     if (row >= rows || col >= cols)
         throw std::out_of_range("Matrix index out of range");
@@ -197,4 +217,122 @@ void DynamicMatrix::print() const {
 
         std::cout << std::endl;
     }
+}
+
+void DynamicMatrix::deleteItem(size_t rowIndex, size_t colIndex) {
+    if (rowIndex >= rows || colIndex >= cols) {
+        throw std::out_of_range("Invalid index for deletion");
+    }
+    matrix[rowIndex][colIndex] = Vector3D();
+}
+
+void DynamicMatrix::addItem(size_t rowIndex, size_t colIndex, const Vector3D& vec) {
+    if (rowIndex >= rows || colIndex >= cols) {
+        throw std::out_of_range("Invalid index for addition");
+    }
+    matrix[rowIndex][colIndex] = vec;  // Insert the vector at the given position
+}
+
+void DynamicMatrix::addVectorAt(size_t rowIndex, size_t colIndex, const Vector3D& vec) {
+    if (rowIndex >= rows || colIndex >= cols) {
+        throw std::out_of_range("Invalid index for vector addition");
+    }
+    matrix[rowIndex][colIndex] = matrix[rowIndex][colIndex] + vec;  // Add vector
+}
+
+bool DynamicMatrix::operator==(const DynamicMatrix& other) const {
+    if (rows != other.rows || cols != other.cols) return false;
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            if (!(matrix[i][j] == other.matrix[i][j])) return false;
+        }
+    }
+    return true;
+}
+
+bool DynamicMatrix::operator!=(const DynamicMatrix& other) const {
+    return !(*this == other);
+}
+
+bool DynamicMatrix::operator<(const DynamicMatrix& other) const {
+    return this->totalMagnitude() < other.totalMagnitude();
+}
+
+bool DynamicMatrix::operator>(const DynamicMatrix& other) const {
+    return this->totalMagnitude() > other.totalMagnitude();
+}
+
+bool DynamicMatrix::operator<=(const DynamicMatrix& other) const {
+    return !(*this > other);
+}
+
+bool DynamicMatrix::operator>=(const DynamicMatrix& other) const {
+    return !(*this < other);
+}
+
+// Helper function to calculate total magnitude of vectors
+double DynamicMatrix::totalMagnitude() const {
+    double sum = 0;
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            sum += matrix[i][j].lenght();  // Use the length method of Vector3D
+        }
+    }
+    return sum;
+}
+
+std::ostream& operator<<(std::ostream& os, const DynamicMatrix& mat) {
+    for (size_t i = 0; i < mat.rows; ++i) {
+        for (size_t j = 0; j < mat.cols; ++j) {
+            os << mat.matrix[i][j] << " ";
+        }
+        os << std::endl;
+    }
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, DynamicMatrix& mat) {
+    for (size_t i = 0; i < mat.rows; ++i) {
+        for (size_t j = 0; j < mat.cols; ++j) {
+            is >> mat.matrix[i][j].x >> mat.matrix[i][j].y >> mat.matrix[i][j].z;
+        }
+    }
+    return is;
+}
+
+void DynamicMatrix::saveToFile(const std::string& filename) const {
+    std::ofstream file(filename, std::ios::binary);
+    if (!file) {
+        throw std::runtime_error("Unable to open file for writing");
+    }
+
+    file.write(reinterpret_cast<const char*>(&rows), sizeof(rows));
+    file.write(reinterpret_cast<const char*>(&cols), sizeof(cols));
+
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            file.write(reinterpret_cast<const char*>(&matrix[i][j]), sizeof(Vector3D));
+        }
+    }
+}
+
+DynamicMatrix DynamicMatrix::loadFromFile(const std::string& filename) {
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) {
+        throw std::runtime_error("Unable to open file for reading");
+    }
+
+    size_t rows, cols;
+    file.read(reinterpret_cast<char*>(&rows), sizeof(rows));
+    file.read(reinterpret_cast<char*>(&cols), sizeof(cols));
+
+    DynamicMatrix result(rows, cols);
+
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            file.read(reinterpret_cast<char*>(&result.matrix[i][j]), sizeof(Vector3D));
+        }
+    }
+
+    return result;
 }

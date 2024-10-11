@@ -43,6 +43,14 @@ Vector3D Vector3D::operator-() const {
 	return Vector3D(-x, -y, -z);
 }
 
+bool Vector3D::operator==(const Vector3D& other) const {
+    return (x == other.x && y == other.y && z == other.z);
+}
+
+bool Vector3D::operator!=(const Vector3D& other) const {
+    return !(*this == other);
+}
+
 double Vector3D::lenght() const {
 	return sqrt(x*x+y*y+z*z);
 }

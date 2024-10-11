@@ -2,6 +2,22 @@
 #include <catch/catch.hpp>
 #include "dynamic_matrix.h"
 
+TEST_CASE("DynamicMatrix: Edge Cases", "[DynamicMatrix]") {
+    SECTION("Empty matrix construction") {
+        DynamicMatrix emptyMatrix;
+        CHECK(emptyMatrix.getRows() == 0);
+        CHECK(emptyMatrix.getCols() == 0);
+    }
+
+    SECTION("Single element matrix") {
+        DynamicMatrix singleMatrix(1, 1);
+        singleMatrix.at(0, 0) = Vector3D(1, 2, 3);
+        CHECK(singleMatrix.at(0, 0).x == 1);
+        CHECK(singleMatrix.at(0, 0).y == 2);
+        CHECK(singleMatrix.at(0, 0).z == 3);
+    }
+}
+
 TEST_CASE("DynamicMatrix Construction and Basic Operations", "[DynamicMatrix]") {
     SECTION("Constructor and size") {
         DynamicMatrix matrix(3, 4);
@@ -199,5 +215,101 @@ TEST_CASE("DynamicMatrix Submatrix Insertion", "[DynamicMatrix]") {
         CHECK(matrix.at(3, 3).x == 6);
 
         CHECK_THROWS_AS(matrix.insertSubmatrix(submatrix, 3, 3), const std::out_of_range&);
+    }
+}
+
+TEST_CASE("DynamicMatrix: addItem and deleteItem") {
+    DynamicMatrix matrix(3, 3);
+    Vector3D vec(1.0, 2.0, 3.0);
+
+    matrix.addItem(1, 1, vec);
+    REQUIRE(matrix.at(1, 1).x == 1.0);
+    REQUIRE(matrix.at(1, 1).y == 2.0);
+    REQUIRE(matrix.at(1, 1).z == 3.0);
+
+    matrix.deleteItem(1, 1);
+    REQUIRE(matrix.at(1, 1).x == 0.0);
+}
+
+TEST_CASE("DynamicMatrix: addVectorAt") {
+    DynamicMatrix matrix(3, 3);
+    Vector3D vec1(1.0, 1.0, 1.0);
+    Vector3D vec2(2.0, 2.0, 2.0);
+
+    matrix.addItem(1, 1, vec1);
+    matrix.addVectorAt(1, 1, vec2);
+
+    REQUIRE(matrix.at(1, 1).x == 3.0);
+    REQUIRE(matrix.at(1, 1).y == 3.0);
+    REQUIRE(matrix.at(1, 1).z == 3.0);
+}
+
+TEST_CASE("DynamicMatrix: Comparison Operators") {
+    DynamicMatrix matrix1(2, 2);
+    DynamicMatrix matrix2(2, 2);
+
+    matrix1.addItem(0, 0, Vector3D(1.0, 2.0, 3.0));
+    matrix2.addItem(0, 0, Vector3D(1.0, 2.0, 3.0));
+
+    REQUIRE(matrix1 == matrix2);
+
+    matrix2.addItem(0, 0, Vector3D(4.0, 5.0, 6.0));
+    REQUIRE(matrix1 != matrix2);
+
+    DynamicMatrix matrix3(2, 2);
+    matrix3.addItem(0, 0, Vector3D(0.5, 1.0, 1.5));
+    REQUIRE(matrix3 < matrix1);
+    REQUIRE(matrix2 > matrix1);
+    REQUIRE(matrix1 <= matrix1);
+    REQUIRE(matrix1 >= matrix3);
+}
+
+TEST_CASE("DynamicMatrix: Move Constructor and Assignment Operator", "[DynamicMatrix]") {
+    DynamicMatrix matrix1(2, 2);
+    matrix1.at(0, 0) = Vector3D(1, 2, 3);
+    matrix1.at(1, 1) = Vector3D(4, 5, 6);
+
+    DynamicMatrix matrix2(std::move(matrix1));
+    CHECK(matrix2.at(0, 0).x == 1);
+    CHECK(matrix2.at(1, 1).z == 6);
+    CHECK(matrix1.getRows() == 0);
+    CHECK(matrix1.getCols() == 0);
+
+    DynamicMatrix matrix3(1, 1);
+    matrix3 = std::move(matrix2);
+    CHECK(matrix3.getRows() == 2);
+    CHECK(matrix3.getCols() == 2);
+    CHECK(matrix3.at(0, 0).y == 2);
+    CHECK(matrix3.at(1, 1).x == 4);
+    CHECK(matrix2.getRows() == 0);
+    CHECK(matrix2.getCols() == 0);
+}
+
+TEST_CASE("DynamicMatrix: File I/O Operations", "[DynamicMatrix]") {
+    DynamicMatrix matrix(2, 2);
+    matrix.at(0, 0) = Vector3D(1, 2, 3);
+    matrix.at(0, 1) = Vector3D(4, 5, 6);
+    matrix.at(1, 0) = Vector3D(7, 8, 9);
+    matrix.at(1, 1) = Vector3D(10, 11, 12);
+
+    SECTION("Save to file and load from file") {
+        std::string filename = "test_matrix.bin";
+        matrix.saveToFile(filename);
+
+        DynamicMatrix loaded = DynamicMatrix::loadFromFile(filename);
+        CHECK(loaded == matrix);
+
+        // Clean up the test file
+        std::remove(filename.c_str());
+    }
+
+    SECTION("Save to file - file open failure") {
+        std::string invalidFilename = "/invalid/path/test_matrix.bin";
+        CHECK_THROWS_AS(matrix.saveToFile(invalidFilename), const std::runtime_error&);
+    }
+
+    SECTION("Load from file - file open failure") {
+        std::string nonExistentFile = "non_existent_file.bin";
+        CHECK_THROWS_AS(DynamicMatrix::loadFromFile(nonExistentFile), const std::runtime_error&);
     }
 }
