@@ -10,14 +10,13 @@ This project implements a dynamic matrix structure in C++ with support for 3D ve
 - Submatrix insertion
 - File I/O operations for saving and loading matrices
 - Move semantics for efficient resource management
-- Comprehensive unit tests using Catch2 framework
+- Comprehensive unit tests using Catch framework
 
 ** Navigation
 - [[#building][Building]]
   - [[#with-nix][With Nix]]
   - [[#manually][Manually]]
 - [[#usage][Usage]]
-- [[#file-io][File I/O]]
 
 ** Building
 
@@ -84,16 +83,16 @@ To use the DynamicMatrix class in your own projects:
    DynamicMatrix moved_matrix = std::move(result);
    #+end_src
 
-** File I/O
+3. File I/O operations
 
-Save a matrix to a file:
-#+begin_src cpp
-matrix.saveToFile("matrix.bin");
-#+end_src
+   Save a matrix to a file:
+   #+begin_src cpp
+   matrix.saveToFile("matrix.bin");
+   #+end_src
 
-Load a matrix from a file:
-#+begin_src cpp
-DynamicMatrix loaded_matrix = DynamicMatrix::loadFromFile("matrix.bin");
-#+end_src
+   Load a matrix from a file:
+   #+begin_src cpp
+   DynamicMatrix loaded_matrix = DynamicMatrix::loadFromFile("matrix.bin");
+   #+end_src
 
-For more detailed examples, refer to the test cases in `tests/dynamic_matrix_tests.cpp`.
+   For more detailed examples, refer to the test cases in `tests/dynamic_matrix_tests.cpp`.
