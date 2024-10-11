@@ -8,6 +8,8 @@ This project implements a dynamic matrix structure in C++ with support for 3D ve
 - Matrix arithmetic operations (addition, subtraction, multiplication)
 - Row and column manipulation (insertion, deletion)
 - Submatrix insertion
+- File I/O operations for saving and loading matrices
+- Move semantics for efficient resource management
 - Comprehensive unit tests using Catch2 framework
 
 ** Navigation
@@ -15,6 +17,7 @@ This project implements a dynamic matrix structure in C++ with support for 3D ve
   - [[#with-nix][With Nix]]
   - [[#manually][Manually]]
 - [[#usage][Usage]]
+- [[#file-io][File I/O]]
 
 ** Building
 
@@ -38,7 +41,7 @@ nix develop github:seajoyer/Dynamic_matrix
 
 Ensure you have the following dependencies installed:
 
-- [[https://gcc.gnu.org/][g++]] compiler
+- [[https://gcc.gnu.org/][g++]] compiler (with C++11 support)
 - [[https://www.gnu.org/software/make/][GNU Make]]
 - [[https://github.com/catchorg/Catch2][Catch2]] (for testing)
 
@@ -76,6 +79,21 @@ To use the DynamicMatrix class in your own projects:
 
    DynamicMatrix result = matrix * 2;
    result.print();
+
+   // Use move semantics for efficient transfers
+   DynamicMatrix moved_matrix = std::move(result);
    #+end_src
+
+** File I/O
+
+Save a matrix to a file:
+#+begin_src cpp
+matrix.saveToFile("matrix.bin");
+#+end_src
+
+Load a matrix from a file:
+#+begin_src cpp
+DynamicMatrix loaded_matrix = DynamicMatrix::loadFromFile("matrix.bin");
+#+end_src
 
 For more detailed examples, refer to the test cases in `tests/dynamic_matrix_tests.cpp`.
